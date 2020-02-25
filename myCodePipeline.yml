@@ -1,0 +1,31 @@
+# (c) 2019 Amazon Web Services, Inc. or its affiliates. All Rights Reserved. This AWS Content is provided subject to the terms of the AWS Customer 
+# Agreement available at https://aws.amazon.com/agreement/ or other written agreement between Customer and Amazon Web Services, Inc.
+AWSTemplateFormatVersion: '2010-09-09'
+Description:  Provides a pipeline used to roll out various Cloudformation Stacks
+
+Parameters:
+
+  pApplicationShortName:
+    Type: String
+    Description: Short name
+    AllowedPattern: '^[a-zA-Z0-9_]*'
+    ConstraintDescription: Letters, numbers, underscores only
+    Default: Application
+
+Resources:
+  rPipeline:
+      Type: AWS::CodePipeline::Pipeline
+      Properties:
+        Name: !Ref pApplicationShortName
+        RestartExecutionOnUpdate: 'true'
+        Stages:
+        # Confirm Deployment
+        - Name: Confirm
+          Actions:
+          - Name: ManualApproval
+            RunOrder: 1
+            ActionTypeId:
+              Category: Approval
+              Owner: AWS
+              Version: '1'
+              Provider: Manual
