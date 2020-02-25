@@ -29,3 +29,13 @@ Resources:
               Owner: AWS
               Version: '1'
               Provider: Manual
+        # Confirm Deployment
+        - Name: Confirm Again
+          Actions:
+          - Name: Another ManualApproval
+            RunOrder: 2
+            ActionTypeId:
+              Category: Approval
+              Owner: AWS
+              Version: '1'
+              Provider: Manual
