@@ -13,18 +13,30 @@ Parameters:
     Default: Application
 
 Resources:
-  rCodeRepository:
-      Type: AWS::CodeCommit::Repository
-      Properties:
-        RepositoryDescription: !Sub Repository for ${pApplicationShortName}
-        RepositoryName: !Ref pApplicationShortName
-        
   rPipeline:
       Type: AWS::CodePipeline::Pipeline
       Properties:
         Name: !Ref pApplicationShortName
         RestartExecutionOnUpdate: 'true'
         Stages:
+        # Source stage
+        - Name: Source
+          Actions:
+          - Name: Source
+            RunOrder: 1
+            ActionTypeId:
+              Category: Source
+              Owner: ThirdParty
+              Provider: GitHub
+              Version: '1'
+            Configuration:
+              OAuthToken: !Sub '{{resolve:ssm:/ThirdParty/Repo/GithubSecrets:1}}'
+              Owner: iservecharlie
+              Repo: myCodePipeline
+              PollForSourceChanges: true
+              Branch: master
+            OutputArtifacts:
+            - Name: AppNestedStacks
         # Confirm Deployment
         - Name: Confirm
           Actions:
